@@ -36,12 +36,11 @@ const shipment = computed(() => {
   return store.shipments.find((shipment) => shipment.shipment_id === props.id);
 });
 
-const assignTransporter = computed(() => {
-  const assignedId = shipment.value?.transporter_id;
-  return (
-    store.transporters.find((t) => t.transporter_id === assignedId)?.name || ""
-  );
-});
+const assignedTransporter = computed(() =>
+  store.transporters.find(
+    (t) => t.transporter_id === shipment.value?.transporter_id
+  )
+);
 
 function assign() {
   if (!selectedTransporter.value) {
@@ -95,6 +94,7 @@ function assign() {
         <div class="grid grid-cols-1 gap-1 p-3 sm:grid-cols-3 sm:gap-4">
           <dt class="font-medium text-gray-900">Transporter</dt>
           <dd class="text-gray-700 sm:col-span-2">
+            {{ assignedTransporter?.name }}
             <span v-if="shipment.status === 'Assigned'">{{
               shipment.transporter_id.label
             }}</span>
