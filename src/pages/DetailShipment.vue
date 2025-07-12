@@ -38,13 +38,6 @@ const shipment = computed(() => {
   );
 });
 
-const assignedTransporter = computed(() => {
-  if (!shipment.value) return null;
-  return transporterStore.transporters.find(
-    (t) => t.transporter_id === shipment.value.transporter_id
-  );
-});
-
 function assign() {
   if (!selectedTransporter.value) {
     message.value = "Please select a transporter.";
