@@ -79,7 +79,12 @@ const handleCloseModal = () => {
 </script>
 
 <template>
-  <Toast />
+  <Toast
+    position="top-center"
+    :breakpoints="{
+      '960px': { width: '90vw' },
+    }"
+  />
   <div class="card flex mb-5">
     <Button label="Add new shipment" @click="visible = true" />
     <Dialog

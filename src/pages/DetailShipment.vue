@@ -54,7 +54,12 @@ function assign() {
 }
 </script>
 <template>
-  <Toast />
+  <Toast
+    position="top-center"
+    :breakpoints="{
+      '960px': { width: '90vw' },
+    }"
+  />
   <div class="mb-4">
     <router-link to="/" class="text-blue-600">← Back</router-link>
   </div>
