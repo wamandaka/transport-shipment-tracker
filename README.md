@@ -5,6 +5,7 @@
 - Vue 3 + Composition API
 - Pinia
 - TailwindCSS
+- PrimeVue
 - Vue Router
 - Static JSON (Mock Data)
 - Vitest (Unit Testing)
@@ -14,7 +15,6 @@
 - List and detail view of shipments
 - Assign transporters
 - State management via Pinia
-- Simulated real-time status updates (every 5s)
 - Form validation & feedback messages
 - Responsive layout
 
@@ -24,17 +24,22 @@
 src/
 ├── assets/
 ├── components/
+│   ├── ListShipment.vue
+│   └── Navbar.vue
+├── data/
+│   ├── shipment.json
+│   └── transporter.json
 ├── pages/
-│   ├── ListView.vue
-│   └── DetailView.vue
+│   ├── Home.vue
+│   └── DetailShipment.vue
 ├── router/
+│   └── index.js
 ├── stores/
+│   └── shipment.js
+├── tests/
+│   └── shipmentStore.test.js
 ├── App.vue
 ├── main.js
-public/
-├── data/
-│   ├── shipments.json
-│   └── transporters.json
 ```
 
 ## 📦 Run Locally
@@ -48,9 +53,6 @@ npm run dev
 
 ```bash
 npx vitest
+or
+npm run test
 ```
-
-## 📄 Assumptions
-
-- Shipment status changes to "Delivered" randomly every 5 seconds
-- Static data used for simplicity (no backend integration)
