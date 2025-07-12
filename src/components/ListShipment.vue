@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from "vue";
 import { useShipmentStore } from "../stores/shipment";
-import { Button, Dialog, InputText, Select, Toast } from "primevue";
+import { Button, Dialog, InputText, Message, Select, Toast } from "primevue";
 import { useToast } from "primevue";
 
 const vehicle = [
@@ -23,6 +23,8 @@ const visible = ref(false);
 const idRandom = () => {
   return `SHIP${Math.floor(Math.random() * 1000000)}`;
 };
+const isSuccess = ref(false);
+const message = ref("");
 const shipment = ref({
   shipment_id: idRandom(),
   origin: "",
@@ -39,10 +41,13 @@ const addShipment = () => {
     !shipment.value.vehicle
   ) {
     // showToast("Please fill in all fields.", "danger");
+    message.value = "Please fill in all fields.";
+    isSuccess.value = false;
     return;
   }
   shipmentStore.addShipment(shipment.value);
   showToast("Shipment added successfully.", "success");
+  message.value = "";
   visible.value = false;
   shipment.value = {
     shipment_id: "",
@@ -63,6 +68,11 @@ const showToast = (message, severity) => {
   });
 };
 
+const handleCloseModal = () => {
+  visible.value = false;
+  message.value = "";
+};
+
 // onMounted(() => {
 //   shipmentStore.fetchShipments();
 // });
@@ -78,6 +88,9 @@ const showToast = (message, severity) => {
       header="Add new Shipment"
       :style="{ width: '25rem' }"
     >
+      <div v-if="message" class="my-4">
+        <Message severity="error" closable>{{ message }}</Message>
+      </div>
       <div class="flex items-center gap-4 mb-4">
         <label for="origin" class="font-semibold w-24">Origin</label>
         <InputText
@@ -111,7 +124,7 @@ const showToast = (message, severity) => {
           type="button"
           label="Cancel"
           severity="secondary"
-          @click="visible = false"
+          @click="handleCloseModal"
         ></Button>
         <Button type="button" label="Save" @click="addShipment"></Button>
       </div>
