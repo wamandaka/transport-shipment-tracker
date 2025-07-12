@@ -6,8 +6,8 @@ import { Button, Select, Toast } from "primevue";
 
 const toast = useToast();
 const props = defineProps(["id"]);
-const shipmentStore = useShipmentStore();
-const transporterStore = useShipmentStore();
+const store = useShipmentStore();
+// const transporterStore = useShipmentStore();
 const selectedTransporter = ref("");
 const message = ref("");
 const success = ref(false);
@@ -26,15 +26,20 @@ const showSuccess = (type) => {
 // });
 
 const transporterOptions = computed(() => {
-  return transporterStore.transporters.map((transporter) => ({
+  return store.transporters.map((transporter) => ({
     label: transporter.name,
     value: transporter.transporter_id,
   }));
 });
 
 const shipment = computed(() => {
-  return shipmentStore.shipments.find(
-    (shipment) => shipment.shipment_id === props.id
+  return store.shipments.find((shipment) => shipment.shipment_id === props.id);
+});
+
+const assignTransporter = computed(() => {
+  const assignedId = shipment.value?.transporter_id;
+  return (
+    store.transporters.find((t) => t.transporter_id === assignedId)?.name || ""
   );
 });
 
@@ -44,10 +49,7 @@ function assign() {
     success.value = false;
     return;
   }
-  const result = shipmentStore.assignTransporter(
-    props.id,
-    selectedTransporter.value
-  );
+  const result = store.assignTransporter(props.id, selectedTransporter.value);
   message.value = result.message;
   success.value = result.success;
   showSuccess(result.success ? "success" : "danger");
@@ -92,13 +94,10 @@ function assign() {
 
         <div class="grid grid-cols-1 gap-1 p-3 sm:grid-cols-3 sm:gap-4">
           <dt class="font-medium text-gray-900">Transporter</dt>
-
           <dd class="text-gray-700 sm:col-span-2">
-            <span
-              v-if="shipment.status === 'Assigned'"
-              class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-teal-100 text-teal-800"
-              >Assigned</span
-            >
+            <span v-if="shipment.status === 'Assigned'">{{
+              shipment.transporter_id.label
+            }}</span>
             <span
               v-if="shipment.status === 'Not Assigned'"
               class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-100 text-red-800"
