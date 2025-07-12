@@ -1,0 +1,42 @@
+[
+  {
+    "shipment_id": "SHIP123456",
+    "origin": "Jakarta",
+    "destination": "Surabaya",
+    "transporter_id": "TR001",
+    "vehicle": "Truck",
+    "status": "Assigned"
+  },
+  {
+    "shipment_id": "SHIP123457",
+    "origin": "Bandung",
+    "destination": "Yogyakarta",
+    "transporter_id": "",
+    "vehicle": "Van",
+    "status": "Not Assigned"
+  },
+  {
+    "shipment_id": "SHIP123458",
+    "origin": "Medan",
+    "destination": "Makassar",
+    "transporter_id": "TR002",
+    "vehicle": "Ship",
+    "status": "Assigned"
+  },
+  {
+    "shipment_id": "SHIP123459",
+    "origin": "Bali",
+    "destination": "Lombok",
+    "transporter_id": "",
+    "vehicle": "Boat",
+    "status": "Not Assigned"
+  },
+  {
+    "shipment_id": "SHIP123460",
+    "origin": "Palembang",
+    "destination": "Batam",
+    "transporter_id": "TR003",
+    "vehicle": "Truck",
+    "status": "Assigned"
+  }
+]
