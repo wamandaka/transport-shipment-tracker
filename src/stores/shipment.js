@@ -44,8 +44,15 @@ export const useShipmentStore = defineStore("shipment", {
     // },
     assignTransporter(shipmentId, transporterId) {
       const shipment = this.shipments.find((s) => s.shipment_id === shipmentId);
+
       if (shipment && transporterId) {
-        shipment.transporter_id = transporterId;
+        // Pastikan transporterId adalah string ID saja
+        const cleanTransporterId =
+          typeof transporterId === "object"
+            ? transporterId.value
+            : transporterId;
+
+        shipment.transporter_id = cleanTransporterId;
         shipment.status = "Assigned";
         return { success: true, message: "Transporter assigned successfully." };
       }

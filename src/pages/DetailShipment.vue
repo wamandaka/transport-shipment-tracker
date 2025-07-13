@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { useShipmentStore } from "../stores/shipment";
 import { useToast } from "primevue/usetoast";
 import { Button, Select, Toast } from "primevue";
@@ -11,6 +11,15 @@ const store = useShipmentStore();
 const selectedTransporter = ref("");
 const message = ref("");
 const success = ref(false);
+
+// Debugging: Log perubahan state
+watch(
+  () => store.shipments,
+  (newVal) => {
+    console.log("Shipments updated:", newVal);
+  },
+  { deep: true }
+);
 
 const showSuccess = (type) => {
   toast.add({
@@ -27,31 +36,45 @@ const showSuccess = (type) => {
 
 const transporterOptions = computed(() => {
   return store.transporters.map((transporter) => ({
-    label: transporter.name,
+    name: transporter.name,
     value: transporter.transporter_id,
   }));
 });
 
 const shipment = computed(() => {
-  return store.shipments.find((shipment) => shipment.shipment_id === props.id);
+  const found = store.shipments.find((s) => s.shipment_id === props.id);
+  console.log("Found shipment:", found); // Debug
+  return found;
 });
 
-const assignedTransporter = computed(() =>
-  store.transporters.find(
-    (t) => t.transporter_id === shipment.value?.transporter_id
-  )
-);
+const assignedTransporter = computed(() => {
+  if (!shipment.value?.transporter_id) {
+    console.log("No transporter assigned yet");
+    return null;
+  }
+  const found = store.transporters.find(
+    (t) => t.transporter_id === shipment.value.transporter_id
+  );
+  console.log("Assigned transporter:", found); // Debug
+  return found;
+});
 
 function assign() {
+  console.log("Assigning:", selectedTransporter.value); // Debug
   if (!selectedTransporter.value) {
     message.value = "Please select a transporter.";
     success.value = false;
+    showSuccess("error");
     return;
   }
+
   const result = store.assignTransporter(props.id, selectedTransporter.value);
+  console.log("Assignment result:", result); // Debug
+
   message.value = result.message;
   success.value = result.success;
-  showSuccess(result.success ? "success" : "danger");
+
+  showSuccess(result.success ? "success" : "error");
 }
 </script>
 <template>
@@ -94,15 +117,15 @@ function assign() {
         <div class="grid grid-cols-1 gap-1 p-3 sm:grid-cols-3 sm:gap-4">
           <dt class="font-medium text-gray-900">Transporter</dt>
           <dd class="text-gray-700 sm:col-span-2">
-            {{ assignedTransporter?.name }}
-            <span v-if="shipment.status === 'Assigned'">{{
-              shipment.transporter_id.label
-            }}</span>
+            <span v-if="shipment.status === 'Assigned'">
+              {{ assignedTransporter?.name }}
+            </span>
             <span
-              v-if="shipment.status === 'Not Assigned'"
+              v-else
               class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-100 text-red-800"
-              >Not Assigned</span
             >
+              Not Assigned
+            </span>
           </dd>
         </div>
       </dl>
@@ -115,7 +138,7 @@ function assign() {
           <Select
             v-model="selectedTransporter"
             :options="transporterOptions"
-            optionLabel="label"
+            optionLabel="name"
             placeholder="Select a transporter"
             class="w-full md:w-56"
           />
